@@ -1,6 +1,7 @@
 # Football Data Explorer
 A Streamlit app for football data exploration.
-#Introduction
+
+# Introduction
 As a football fan and an enthusiast of the use of data
 in sport, I've always enjoyed playing around with data
 and visualizing it in different ways. This app was a 
@@ -14,7 +15,7 @@ preferences in mind while doing it. However, I'm
 sure this can be useful or interesting for anyone 
 interested in sports analytics.
 
-#Data Source
+# Data Source
 The data is publicly available in the 
 FiveThirtyEight Data
 repository on GitHub.
