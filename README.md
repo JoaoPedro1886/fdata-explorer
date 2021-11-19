@@ -17,6 +17,6 @@ interested in sports analytics.
 #Data Source
 The data is publicly available in the 
 FiveThirtyEight Data
-repository on Github.
+repository on GitHub.
 
-1. [Caption](https://github.com/fivethirtyeight/data/blob/master/soccer-spi/README.md)# Football-Data-Explorer
+1. [Data Source](https://github.com/fivethirtyeight/data/blob/master/soccer-spi/README.md)
