@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 
 
-@st.cache()
+@st.cache(allow_output_mutation=True)
 def data():
     dtype_list = {'season': 'int32',
                   'date': 'O',

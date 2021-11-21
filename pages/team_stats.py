@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Nov  2 00:48:50 2021
-
-@author: joaopdrosr
-"""
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -28,8 +20,11 @@ def app():
 
     selected_team = st.sidebar.selectbox('Enter team', df.team1.sort_values().unique())
 
-    selected_season = st.sidebar.selectbox('Select season', df[df['team1'] == selected_team]
-                                           .season.sort_values(ascending=False).unique())
+    seasons = df[df['team1'] == selected_team].season.sort_values(ascending=False).unique()
+    options = ['%s-%s' % (str(x), str(x + 1)) for x in seasons]
+    keys = dict(zip(options, seasons))
+    selected_season = st.sidebar.selectbox('Select Season', options)
+    selected_season = keys[selected_season]
 
     selected_league = st.sidebar.selectbox('Enter league', df[(df['team1'] == selected_team) &
                                                               (df['season'] == selected_season)]
@@ -39,12 +34,12 @@ def app():
 
     df_range['datetime'] = pd.to_datetime(df_range['date'], format='%Y-%m-%d')
 
-    number = st.sidebar.number_input('Insert a number', min_value=1, step=1)
+    number = st.sidebar.number_input('Insert number for rolling average', min_value=1, step=1)
 
     metrics = ['shot-xg', 'non-shot-xg']
     metric = st.sidebar.radio('Choose Metric', ('Shot-based xG', 'Non-shot-based xG', 'Goal'))
 
-    today = date.today()
+    today = pd.to_datetime(date.today())
 
     start_date = pd.to_datetime(df_range['date'].iloc[0])
     end_date = pd.to_datetime(df_range['date'].iloc[-1])
@@ -56,7 +51,7 @@ def app():
         # st.write(d1)
 
     with col2:
-        d2 = st.date_input("To:", value=end_date, min_value=start_date, max_value=end_date)
+        d2 = st.date_input("To:", value=today, min_value=start_date, max_value=today)
 
     # st.write(d2)
 
