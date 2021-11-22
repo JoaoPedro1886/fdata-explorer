@@ -1,5 +1,7 @@
 # Football Data Explorer
 A Streamlit app for football data exploration.
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/joaopedro1886/fdata-explorer/app.py/)
+
 
 # Introduction
 Simple Streamlit app that allows the user to explore 
