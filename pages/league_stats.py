@@ -36,10 +36,10 @@ def app():
     with col2:
         d2 = st.date_input("To:", value=end_date, min_value=start_date, max_value=end_date)
 
-    def get_proba(X,y):
+    def get_proba(X, y):
         model = LogisticRegression()
-        model.fit(X,y)
-        return model.predict_proba(X)[:,1]
+        model.fit(X, y)
+        return model.predict_proba(X)[:, 1]
 
     def create_xptscol():
         df1 = load_data()
@@ -52,7 +52,9 @@ def app():
         y2 = df1['win2']
         y3 = df1['draw']
         df1['xP_home'] = 3 * get_proba(X, y1) + get_proba(X, y3)
+        df1['PTS_home'] = 3 * y1 + y3
         df1['xP_away'] = 3 * get_proba(X, y2) + get_proba(X, y3)
+        df1['PTS_away'] = 3 * y2 + y3
         return df1
 
     def df_filtered(league=selected_league, season=selected_season, date1=d1, date2=d2):
@@ -60,51 +62,51 @@ def app():
         filt_df = dftofilter[dftofilter['league'] == league]
         filt_df = filt_df[filt_df['season'] == season]
         filt_df = (filt_df[(filt_df['timestamp'] >= pd.to_datetime(date1))
-                          & (filt_df['timestamp'] <= pd.to_datetime(date2))])
+                           & (filt_df['timestamp'] <= pd.to_datetime(date2))])
         return filt_df
 
     def dataframe(metric='xg'):
         br = df_filtered()
-        #br = dftofilter[dftofilter['league'] == league]
-        #br = br[br['season'] == season]
+        # br = dftofilter[dftofilter['league'] == league]
+        # br = br[br['season'] == season]
         mhome = pd.DataFrame(br.groupby('team1')['team1'].count())
         maway = pd.DataFrame(br.groupby('team2')['team2'].count())
         m_merge = pd.merge(mhome, maway, left_index=True, right_index=True)
-        m_merge['M'] = m_merge['team1']+m_merge['team2']
+        m_merge['M'] = m_merge['team1'] + m_merge['team2']
         m_merge = m_merge.drop(['team1', 'team2'], 1)
-        brhome = pd.DataFrame(br.groupby('team1')[metric+'1'].mean())
-        brhomeag = pd.DataFrame(br.groupby('team1')[metric+'2'].mean())
-        braway = pd.DataFrame(br.groupby('team2')[metric+'2'].mean())
-        brawayag = pd.DataFrame(br.groupby('team2')[metric+'1'].mean())
+        brhome = pd.DataFrame(br.groupby('team1')[metric + '1'].mean())
+        brhomeag = pd.DataFrame(br.groupby('team1')[metric + '2'].mean())
+        braway = pd.DataFrame(br.groupby('team2')[metric + '2'].mean())
+        brawayag = pd.DataFrame(br.groupby('team2')[metric + '1'].mean())
         merge1 = pd.merge(brhome, braway, left_index=True, right_index=True)
         merge2 = pd.merge(brhomeag, brawayag, left_index=True, right_index=True)
         if metric == 'xg':
             colname = 'xG'
         else:
             colname = 'G'
-        merge1[colname] = np.round((merge1[metric+'1'] + merge1[metric+'2']) / 2, decimals=2)
-        merge2[colname+'A'] = np.round((merge2[metric+'1'] + merge2[metric+'2']) / 2, decimals=2)
-        merge = pd.merge(merge1[[colname]], merge2[[colname+'A']], left_index=True, right_index=True)
-        merge[colname+'D'] = merge[colname] - merge[colname+'A']
+        merge1[colname] = np.round((merge1[metric + '1'] + merge1[metric + '2']) / 2, decimals=2)
+        merge2[colname + 'A'] = np.round((merge2[metric + '1'] + merge2[metric + '2']) / 2, decimals=2)
+        merge = pd.merge(merge1[[colname]], merge2[[colname + 'A']], left_index=True, right_index=True)
+        merge[colname + 'D'] = merge[colname] - merge[colname + 'A']
         merge = pd.merge(m_merge, merge, left_index=True, right_index=True)
         return merge
 
     def df_xpts():
         df2 = df_filtered()
-        df2home = pd.DataFrame(df2.groupby('team1').xP_home.sum())
-        df2away = pd.DataFrame(df2.groupby('team2').xP_away.sum())
+        df2home = pd.DataFrame(df2.groupby('team1')['PTS_home', 'xP_home'].sum())
+        df2away = pd.DataFrame(df2.groupby('team2')['PTS_away', 'xP_away'].sum())
         merge = pd.merge(df2home, df2away, left_index=True, right_index=True)
-        merge['xPts'] = merge['xP_home'] + merge['xP_away']
-        return merge.drop(['xP_home', 'xP_away'], axis=1)
+        merge['PTS'] = merge['PTS_home'] + merge['PTS_away']
+        merge['xPTS'] = merge['xP_home'] + merge['xP_away']
+        return merge.drop(['PTS_home', 'PTS_away', 'xP_home', 'xP_away'], axis=1)
 
     def merge():
         df_xg = dataframe()
-        df_g = dataframe(metric='score')
+        # df_g = dataframe(metric='score')
         df_xp = df_xpts()
-        #df_merge = pd.merge(df_xg, df_g, left_index=True, right_index=True)
+        # df_merge = pd.merge(df_xg, df_g, left_index=True, right_index=True)
         df_merge = pd.merge(df_xg, df_xp, left_index=True, right_index=True)
-        return df_merge.sort_values(by='xPts', ascending=False)
-
+        return df_merge.sort_values(by='PTS', ascending=False)
 
     table = merge()
     cols = [c for c in table.columns]
