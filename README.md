@@ -13,8 +13,6 @@ in sports analytics.
 Improvements still will be made.
 
 # Data Source
-The data is publicly available in the 
-FiveThirtyEight Data
-repository on GitHub.
-
+Data available at 
+https://github.com/fivethirtyeight/data/blob/master/soccer-spi/README.md
 1. [Data Source](https://github.com/fivethirtyeight/data/blob/master/soccer-spi/README.md)
