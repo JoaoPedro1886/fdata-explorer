@@ -6,7 +6,7 @@ from sklearn.linear_model import LogisticRegression
 
 
 def app():
-    st.cache(allow_output_mutation=True)
+    #st.cache(allow_output_mutation=True)
 
     def load_data():
         data = load.data()
