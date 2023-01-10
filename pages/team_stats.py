@@ -8,7 +8,7 @@ from data import load
 
 
 def app():
-    #st.cache()
+    st.cache()
 
     def load_data():
         data = load.data()
